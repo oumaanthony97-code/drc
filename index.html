@@ -34,11 +34,11 @@
 
     /* ================= BACKGROUND ================= */
     body {
-      background: linear-gradient(180deg, #f8681f 0%, #e5521a 100%);
+      background: linear-gradient(180deg, #f76e1d 0%, #f06a1a 100%);
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 14px 8px 26px;
+      padding: 0;
     }
 
     /* ================= PAGE ================= */
@@ -48,7 +48,7 @@
       margin: 0 auto;
       background: transparent;
       border-radius: 0;
-      padding: 0;
+      padding: 12px 12px 18px;
       box-shadow: none;
       border: 0;
       min-width: 0;
@@ -57,11 +57,11 @@
     /* ================= HEADER ================= */
     .header {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 18px;
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
     @media (min-width: 769px) {
@@ -97,23 +97,29 @@
     }
 
     .title-block h1 {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       color: #fff;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      text-align: center;
     }
 
     .title-block p {
-      font-size: 14px;
+      font-size: 12px;
       color: #ffe0d0;
       margin-top: 4px;
+      text-align: center;
     }
 
     .powered {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      font-size: 13px;
+      font-size: 11px;
       color: #fff5ef;
+      margin-top: 2px;
     }
 
     .powered img {
@@ -122,39 +128,43 @@
 
     /* ================= LEAD NOTICE ================= */
     .lead-container {
-      background: rgba(255, 255, 255, 0.08);
-      border-left: 4px solid #ffbc6a;
-      padding: 10px 14px;
-      border-radius: 8px;
-      margin-top: 8px;
+      background: rgba(255,255,255,0.08);
+      border-left: 3px solid #ffd4a8;
+      padding: 8px 10px;
+      border-radius: 10px;
+      margin-top: 4px;
+      width: 100%;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
     }
 
     .lead-container p {
       margin: 0;
-      font-size: 14px;
-      color: #fff5ef;
+      font-size: 11px;
+      color: #fff7f2;
+      line-height: 1.4;
+      text-align: center;
     }
 
     /* ================= PLANS GRID ================= */
     .plans-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
+      gap: 10px;
       margin-top: 12px;
     }
 
     .plan-card[data-plan-id="unlimited"] {
       grid-column: 1 / -1;
-      min-height: 220px;
+      min-height: 146px;
     }
 
     /* ================= PLAN CARD ================= */
     .plan-card {
       position: relative;
-      border-radius: 18px;
-      padding: 14px 12px 12px;
-      min-height: 190px;
-      border: 3px solid #f6d07a;
+      border-radius: 12px;
+      padding: 10px 10px 12px;
+      min-height: 148px;
+      border: 0;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -165,8 +175,8 @@
       min-width: 0;
       text-align: center;
       overflow-wrap: anywhere;
-      background: #f5f1e8;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4);
+      background: rgba(247, 240, 233, 0.96);
+      box-shadow: 0 4px 12px rgba(80, 40, 0, 0.08);
     }
 
     .plan-card::before,
@@ -184,38 +194,38 @@
 
     /* ================= TEXT ================= */
     .plan-tag {
-      font-size: 10px;
-      padding: 5px 10px;
+      font-size: 9px;
+      padding: 4px 8px;
       border-radius: 999px;
-      background: #ff8c2d;
+      background: #f59a2c;
       color: #fff;
-      font-weight: 700;
+      font-weight: 800;
       width: fit-content;
-      margin: 0 auto 8px;
+      margin: 0 auto 6px;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
 
     .plan-name {
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 13px;
+      font-weight: 800;
       color: #111;
-      margin-top: 6px;
+      margin-top: 4px;
       overflow-wrap: anywhere;
-      letter-spacing: 0.01em;
+      letter-spacing: -0.01em;
     }
 
     .plan-duration {
-      font-size: 12px;
-      color: #292929;
-      margin: 6px 0 0;
+      font-size: 11px;
+      color: #2d2d2d;
+      margin: 4px 0 0;
       overflow-wrap: anywhere;
       font-weight: 500;
     }
 
     .plan-price {
-      font-size: 24px;
-      font-weight: 800;
+      font-size: 22px;
+      font-weight: 900;
       overflow-wrap: anywhere;
       color: #111;
       line-height: 1.1;
@@ -223,15 +233,15 @@
     }
 
     .plan-cta {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       letter-spacing: 0.06em;
-      margin-top: 6px;
+      margin-top: 4px;
       text-align: center;
-      background: #e53935;
+      background: linear-gradient(180deg, #ec4b43 0%, #d93f35 100%);
       color: #fff;
       border-radius: 999px;
-      padding: 10px 8px;
+      padding: 9px 8px;
       width: 100%;
       text-transform: uppercase;
       box-shadow: inset 0 -2px 0 rgba(0,0,0,0.08);
@@ -239,10 +249,11 @@
 
     /* ================= NOTE ================= */
     .note {
-      margin-top: 16px;
-      font-size: 13px;
+      margin-top: 14px;
+      font-size: 12px;
       color: #fff2ed;
       text-align: center;
+      line-height: 1.4;
     }
 
     /* ================= MOBILE (THIN MARGIN) ================= */
