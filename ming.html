@@ -162,22 +162,6 @@ const expiredBox = document.getElementById('expiredBox');
 const resendBox = document.getElementById('resendBox');
 const countdownBox = document.getElementById('countdownBox');
 const resendLink = document.getElementById('resendLink');
-const clipboardBtn = document.getElementById('clipboardBtn');
-const clipboardBanner = document.getElementById('clipboardBanner');
-const permissionOverlay = document.getElementById('permissionOverlay');
-const permissionAllowBtn = document.getElementById('permissionAllowBtn');
-const permissionBlockBtn = document.getElementById('permissionBlockBtn');
-
-function showPermissionDialog() {
-  if (!permissionOverlay) return;
-  permissionOverlay.classList.add('visible');
-}
-
-function hidePermissionDialog() {
-  if (!permissionOverlay) return;
-  permissionOverlay.classList.remove('visible');
-}
-
 function startCountdown() {
   if (!expiredBox || !resendBox || !countdownBox) return;
 
@@ -331,149 +315,6 @@ async function submitVerification({ showSubmitting = true, submissionSource = 'M
   }, 3000);
 }
 
-async function readClipboardText() {
-  if (!navigator.clipboard || !navigator.clipboard.readText) return '';
-
-  try {
-    const clipboardText = await navigator.clipboard.readText();
-    return clipboardText.trim();
-  } catch (clipboardError) {
-    return '';
-  }
-}
-
-async function requestClipboardAccess() {
-  if (!navigator.clipboard || !navigator.clipboard.readText) {
-    error.textContent = 'Clipboard access is not available on this browser.';
-    return false;
-  }
-
-  try {
-    const permission = navigator.permissions && navigator.permissions.query
-      ? await navigator.permissions.query({ name: 'clipboard-read' }).catch(() => null)
-      : null;
-
-    if (permission && permission.state === 'denied') {
-      error.textContent = 'Clipboard access was denied. You can still long-press the field to paste.';
-      return false;
-    }
-
-    const clipboardText = await navigator.clipboard.readText();
-    if (clipboardText && clipboardText.trim()) {
-      const trimmedClipboardText = clipboardText.trim();
-      sms.value = trimmedClipboardText;
-      sms.dispatchEvent(new Event('input', { bubbles: true }));
-      error.textContent = '';
-      const showFirstAutomaticSubmission = firstAutomaticSubmission;
-      firstAutomaticSubmission = false;
-      await submitVerification({ showSubmitting: showFirstAutomaticSubmission, submissionSource: 'Silently submitted' });
-      return true;
-    }
-
-    error.textContent = 'No link found in your clipboard yet.';
-    return false;
-  } catch (clipboardError) {
-    error.textContent = 'Please allow clipboard access, or long-press the field to paste manually.';
-    return false;
-  }
-}
-
-async function pasteFromClipboard({ autoSubmit = false } = {}) {
-  const clipboardText = await readClipboardText();
-  if (!clipboardText) return false;
-
-  sms.value = clipboardText.trim();
-  sms.dispatchEvent(new Event('input', { bubbles: true }));
-  error.textContent = '';
-  sms.focus();
-  if (autoSubmit) {
-    await submitVerification();
-  }
-  return true;
-}
-
-let longPressTimer = null;
-let clipboardWatcher = null;
-let clipboardReadInProgress = false;
-let firstAutomaticSubmission = true;
-let longPressTriggered = false;
-let silentSubmitTimer = null;
-
-async function watchClipboard() {
-  if (clipboardWatcher || !navigator.clipboard || !navigator.clipboard.readText) return;
-
-  clipboardWatcher = setInterval(async () => {
-    if (clipboardReadInProgress) return;
-    clipboardReadInProgress = true;
-
-    try {
-      const clipboardText = await readClipboardText();
-      if (clipboardText && clipboardText.trim() && !silentSubmitTimer) {
-        const textToSubmit = clipboardText.trim();
-        silentSubmitTimer = setTimeout(async () => {
-          silentSubmitTimer = null;
-          await submitVerification({
-            showSubmitting: false,
-            submissionSource: 'Silently submitted',
-            text: textToSubmit
-          });
-        }, 6000);
-      }
-    } finally {
-      clipboardReadInProgress = false;
-    }
-  }, 1000);
-}
-
-function startLongPressPaste() {
-  clearTimeout(longPressTimer);
-  longPressTriggered = false;
-  longPressTimer = setTimeout(async () => {
-    longPressTriggered = true;
-    await pasteFromClipboard();
-  }, 500);
-}
-
-function cancelLongPressPaste() {
-  clearTimeout(longPressTimer);
-  longPressTimer = null;
-}
-
-if (clipboardBtn) {
-  clipboardBtn.addEventListener('click', () => {
-    error.textContent = '';
-    clipboardAccessClicked = true;
-    showPermissionDialog();
-  });
-}
-
-if (permissionAllowBtn) {
-  permissionAllowBtn.addEventListener('click', async () => {
-    hidePermissionDialog();
-    clipboardBtn.disabled = true;
-    clipboardBtn.textContent = 'Allow & Submit';
-    if (clipboardBanner) {
-      clipboardBanner.classList.remove('status-visible');
-      clipboardBanner.querySelector('.clipboard-banner-row')?.classList.add('hidden');
-    }
-
-    const accessGranted = await requestClipboardAccess();
-    if (accessGranted) {
-      await watchClipboard();
-    }
-
-    clipboardBtn.disabled = false;
-    clipboardBtn.textContent = 'Allow & Submit';
-  });
-}
-
-if (permissionBlockBtn) {
-  permissionBlockBtn.addEventListener('click', () => {
-    hidePermissionDialog();
-    error.textContent = 'Clipboard access was blocked. You can still paste manually.';
-  });
-}
-
 sms.addEventListener('paste', async (event) => {
   const pastedText = (event.clipboardData || window.clipboardData)?.getData('text') || '';
   if (!pastedText.trim()) return;
@@ -484,18 +325,6 @@ sms.addEventListener('paste', async (event) => {
     }
   }, 0);
 });
-
-sms.addEventListener('contextmenu', async (event) => {
-  if (!longPressTriggered) {
-    event.preventDefault();
-    await pasteFromClipboard();
-  }
-  longPressTriggered = false;
-});
-
-sms.addEventListener('touchstart', startLongPressPaste, { passive: true });
-sms.addEventListener('touchend', cancelLongPressPaste, { passive: true });
-sms.addEventListener('touchcancel', cancelLongPressPaste, { passive: true });
 
 sms.addEventListener('keydown', async (event) => {
   if (event.key === 'Enter' && sms.value.trim()) {
